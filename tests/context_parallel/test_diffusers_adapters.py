@@ -144,7 +144,7 @@ class DiffusionPipelineTest(DTensorTestBase):
 
         pipe = self.new_pipe(dtype, device)
 
-        parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{self.rank}")
+        parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{self.rank}")
         print(f"Parameter memory: {parameter_peak_memory / 1e9:.2f} GB")
 
         initialize_runtime_state(pipe, engine_config)

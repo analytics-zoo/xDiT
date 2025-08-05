@@ -239,21 +239,21 @@ if __name__ == "__main__":
         torch_dtype=torch.bfloat16,
     )
     local_rank = get_world_group().local_rank
-    device = torch.device(f"cuda:{local_rank}")
+    device = torch.device(f"xpu:{local_rank}")
     pipe = pipe.to(device)
 
     pipe.vae.enable_tiling()
 
     parallelize_transformer(pipe)
 
-    torch.cuda.reset_peak_memory_stats()
+    torch.xpu.reset_peak_memory_stats()
     start_time = time.time()
 
     output = pipe(
         num_frames=9,
         prompt="A little girl is riding a bicycle at high speed. Focused, detailed, realistic.",
         num_inference_steps=20,
-        generator=torch.Generator(device="cuda").manual_seed(42),
+        generator=torch.Generator(device="xpu").manual_seed(42),
     ).frames[0]
 
     end_time = time.time()

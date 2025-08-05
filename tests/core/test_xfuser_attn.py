@@ -59,7 +59,7 @@ class TestRingFlashAttn(unittest.TestCase):
         cls.dtype = torch.float16
 
         cls.rank, cls.world_size, cls.ring_degree, cls.ulysses_degree = init_dist()
-        cls.device = torch.device(f"cuda:{cls.rank}")
+        cls.device = torch.device(f"xpu:{cls.rank}")
 
     def setUp(self):
         torch.manual_seed(42 + self.rank)

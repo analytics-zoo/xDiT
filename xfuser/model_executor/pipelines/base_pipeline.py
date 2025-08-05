@@ -105,7 +105,7 @@ class xFuserVAEWrapper:
     
     def execute(self, output_type:str):
         if self.vae is not None:
-            device = f"cuda:{get_world_group().local_rank}"
+            device = f"xpu:{get_world_group().local_rank}"
             rank = get_world_group().rank
             dit_parallel_size = self.dit_parallel_size
             dtype = self.dtype
@@ -573,7 +573,7 @@ class xFuserPipelineBaseWrapper(xFuserBaseWrapper, metaclass=ABCMeta):
             return latents
 
         rank = get_world_group().rank
-        device = f"cuda:{get_world_group().local_rank}"
+        device = f"xpu:{get_world_group().local_rank}"
         dit_parallel_size = get_dit_world_size()
 
         # Gather only from DP last groups to the first VAE worker
@@ -609,7 +609,7 @@ class xFuserPipelineBaseWrapper(xFuserBaseWrapper, metaclass=ABCMeta):
         
         # ---------gather latents from dp last group-----------
         rank = get_world_group().rank
-        device = f"cuda:{get_world_group().local_rank}"
+        device = f"xpu:{get_world_group().local_rank}"
 
         # all gather dp last group rank list
         dp_rank_list = [torch.zeros(1, dtype=int, device=device) for _ in range(get_world_group().world_size)]

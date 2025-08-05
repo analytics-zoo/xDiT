@@ -32,9 +32,9 @@ def main():
         engine_config=engine_config,
         torch_dtype=torch.float16,
         text_encoder_2=text_encoder_2,
-    ).to(f"cuda:{local_rank}")
+    ).to(f"xpu:{local_rank}")
 
-    parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     pipe.prepare_run(input_config)
 
@@ -52,7 +52,7 @@ def main():
     )
     end_time = time.time()
     elapsed_time = end_time - start_time
-    peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     parallel_info = (
         f"dp{engine_args.data_parallel_degree}_cfg{engine_config.parallel_config.cfg_degree}_"

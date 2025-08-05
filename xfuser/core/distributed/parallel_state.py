@@ -7,7 +7,7 @@ from typing import List, Optional
 
 import torch
 import torch.distributed
-from torch.cuda import set_device, device_count
+# from torch.cuda import set_device, device_count
 import xfuser.envs as envs
 from xfuser.logger import init_logger
 from .group_coordinator import (
@@ -232,7 +232,7 @@ def init_distributed_environment(
             world_size=world_size,
             rank=rank,
         )
-        set_device(torch.distributed.get_rank() % device_count())
+        # set_device(torch.distributed.get_rank() % device_count())
     # set the local rank
     # local_rank is not available in torch ProcessGroup,
     # see https://github.com/pytorch/pytorch/issues/122816

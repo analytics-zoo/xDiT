@@ -15,14 +15,14 @@ def setup_logging():
         ]
     )
 
-def compute_fid_score(ref_path: str, sample_path: str, device: str = "cuda") -> float:
+def compute_fid_score(ref_path: str, sample_path: str, device: str = "xpu") -> float:
     """
     Compute FID score
     
     Args:
         ref_path: Path to ref images directory
         sample_path: Path to sample images directory
-        device: Computing device ('cuda' or 'cpu')
+        device: Computing device ('xpu' or 'cpu')
     
     Returns:
         float: FID score
@@ -69,8 +69,8 @@ def main():
                       help='Path to ref images directory')
     parser.add_argument('--sample', type=str, required=True,
                       help='Path to sample images directory')
-    parser.add_argument('--device', type=str, default="cuda",
-                      choices=['cuda', 'cpu'], help='Computing device')
+    parser.add_argument('--device', type=str, default="xpu",
+                      choices=['xpu', 'cpu'], help='Computing device')
     
     args = parser.parse_args()
     

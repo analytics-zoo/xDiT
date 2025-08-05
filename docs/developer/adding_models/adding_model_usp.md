@@ -69,7 +69,7 @@ Ensure that the model checkpoint is loaded on all GPUs. `diffusers` place the mo
 ```python
 from xfuser.core.distributed import get_world_group
 local_rank = get_world_group().local_rank
-device = torch.device(f"cuda:{local_rank}")
+device = torch.device(f"xpu:{local_rank}")
 pipe.to(device)
 ```
 

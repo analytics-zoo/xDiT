@@ -16,7 +16,7 @@ CFG = 2.0
 
 def flush():
     gc.collect()
-    torch.cuda.empty_cache()
+    torch.xpu.empty_cache()
 
 def main():
     parser = FlexibleArgumentParser(description='xFuser Arguments')
@@ -31,13 +31,13 @@ def main():
         pretrained_model_name_or_path=engine_config.model_config.model,
         engine_config=engine_config,
         torch_dtype=torch.float16,
-    ).to(f"cuda:{local_rank}")
+    ).to(f"xpu:{local_rank}")
 
     if args.enable_sequential_cpu_offload:
         pipe.enable_sequential_cpu_offload(gpu_id=local_rank)
         logging.info(f'rank {local_rank} sequential CPU offload enabled')
     else:
-        pipe = pipe.to(f'cuda:{local_rank}')
+        pipe = pipe.to(f'xpu:{local_rank}')
 
     pipe.prepare_run(input_config, steps=1)
 
@@ -63,7 +63,7 @@ def main():
             output_type=input_config.output_type,
             max_sequence_length=256,
             guidance_scale=CFG,
-            generator=torch.Generator(device='cuda').manual_seed(input_config.seed),
+            generator=torch.Generator(device='xpu').manual_seed(input_config.seed),
         )
         if input_config.output_type == 'pil':
             if pipe.is_dp_last_group():

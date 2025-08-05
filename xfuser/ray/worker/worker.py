@@ -72,7 +72,7 @@ class DiTWorker(WorkerBase):
             pretrained_model_name_or_path=pretrained_model_name_or_path,
             engine_config=engine_config,
             **kwargs
-        ).to(f"cuda:{local_rank}")
+        ).to(f"xpu:{local_rank}")
         self.pipe = pipe
         return
     
@@ -131,7 +131,7 @@ class VAEWorker(WorkerBase):
             return_org_pipeline=True,
             **kwargs
         ).to("cpu")
-        vae = getattr(pipe, "vae", None).to(f"cuda:{local_rank}")
+        vae = getattr(pipe, "vae", None).to(f"xpu:{local_rank}")
         
         self.vae = xFuserVAEWrapper(
             vae,

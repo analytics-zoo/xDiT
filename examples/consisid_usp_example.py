@@ -141,7 +141,7 @@ def main():
         print(f"Base Model already exists in {engine_config.model_config.model}, skipping download.")
 
     # 2. Load Pipeline
-    device = torch.device(f"cuda:{local_rank}")
+    device = torch.device(f"xpu:{local_rank}")
     pipe = ConsisIDPipeline.from_pretrained(
         pretrained_model_name_or_path=engine_config.model_config.model,
         torch_dtype=torch.bfloat16,
@@ -165,7 +165,7 @@ def main():
     if args.enable_slicing:
         pipe.vae.enable_slicing()
 
-    parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     initialize_runtime_state(pipe, engine_config)
     get_runtime_state().set_video_input_parameters(
@@ -233,7 +233,7 @@ def main():
 
     end_time = time.time()
     elapsed_time = end_time - start_time
-    peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     parallel_info = (
         f"dp{engine_args.data_parallel_degree}_cfg{engine_config.parallel_config.cfg_degree}_"

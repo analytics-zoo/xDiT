@@ -248,7 +248,7 @@ def main():
         pipe.enable_model_cpu_offload(gpu_id=local_rank)
         logging.info(f"rank {local_rank} model CPU offload enabled")
     else:
-        device = torch.device(f"cuda:{local_rank}")
+        device = torch.device(f"xpu:{local_rank}")
         pipe = pipe.to(device)
 
     if args.enable_tiling:
@@ -266,7 +266,7 @@ def main():
         pipe.vae.enable_slicing()
 
     parameter_peak_memory = torch.cuda.max_memory_allocated(
-        device=f"cuda:{local_rank}")
+        device=f"xpu:{local_rank}")
 
     if engine_config.runtime_config.use_torch_compile:
         torch._inductor.config.reorder_for_compute_comm_overlap = True
@@ -301,7 +301,7 @@ def main():
 
     end_time = time.time()
     elapsed_time = end_time - start_time
-    peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     parallel_info = (
         f"dp{engine_args.data_parallel_degree}_cfg{engine_config.parallel_config.cfg_degree}_"

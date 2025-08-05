@@ -17,7 +17,7 @@ def main():
     pipe = StableDiffusion3Pipeline.from_pretrained(
         pretrained_model_name_or_path=engine_config.model_config.model,
         torch_dtype=torch.float16,
-    ).to(f"cuda:{local_rank}")
+    ).to(f"xpu:{local_rank}")
 
     paralleler = xDiTParallel(pipe, engine_config, input_config)
 

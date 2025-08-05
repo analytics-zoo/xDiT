@@ -52,7 +52,7 @@ def main():
         output_type=input_config.output_type,
         max_sequence_length=256,
         guidance_scale=0.0,
-        generator=torch.Generator(device="cuda").manual_seed(input_config.seed),
+        generator=torch.Generator(device="xpu").manual_seed(input_config.seed),
     )
     end_time = time.time()
     elapsed_time = end_time - start_time

@@ -95,7 +95,8 @@ def xdit_ring_flash_attn_forward(
             key, value = k, v
 
         if not causal or step <= comm.rank:
-            fn = select_flash_attn_impl(attn_type, stage="fwd-only", attn_processor=attn_processor)
+            # fn = select_flash_attn_impl(attn_type, stage="fwd-only", attn_processor=attn_processor)
+            fn = pytorch_attn_forward
             if attn_type == AttnType.FA3: 
                 block_out, block_lse = fn(
                     q,

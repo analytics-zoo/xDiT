@@ -63,11 +63,21 @@ def _is_musa():
         return False
 
 
+def _is_xpu():
+    try:
+        if hasattr(torch, "xpu") and torch.xpu.is_available():
+            return True
+    except ModuleNotFoundError:
+        return False
+
+
 def get_device(local_rank: int) -> torch.device:
     if torch.cuda.is_available():
         return torch.device("cuda", local_rank)
     elif _is_musa():
         return torch.device("musa", local_rank)
+    elif _is_xpu():
+        return torch.device("xpu", local_rank)
     else:
         return torch.device("cpu")
 
@@ -97,6 +107,7 @@ def get_device_version():
 
 
 def get_torch_distributed_backend() -> str:
+    return "ccl"
     if torch.cuda.is_available():
         return "nccl"
     elif _is_musa():
@@ -110,7 +121,7 @@ def get_torch_distributed_backend() -> str:
 variables: Dict[str, Callable[[], Any]] = {
     # ================== Other Vars ==================
     # used in version checking
-    "CUDA_VERSION": lambda: version.parse(get_device_version()),
+    # "CUDA_VERSION": lambda: version.parse(get_device_version()),
     "TORCH_VERSION": lambda: version.parse(
         version.parse(torch.__version__).base_version
     ),
@@ -159,6 +170,7 @@ class PackagesEnvChecker:
         }
 
     def check_flash_attn(self):
+        return False
         if _is_musa():
             logger.info(
                 "Flash Attention library is not supported on MUSA for the moment."

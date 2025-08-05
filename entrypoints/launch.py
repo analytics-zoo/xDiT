@@ -92,7 +92,7 @@ class ImageGenerator:
             pretrained_model_name_or_path=xfuser_args.model,
             engine_config=self.engine_config,
             torch_dtype=torch.float16,
-        ).to("cuda")
+        ).to("xpu")
         
         self.pipe.prepare_run(self.input_config)
         self.logger.info("Model initialization completed")
@@ -106,7 +106,7 @@ class ImageGenerator:
                 prompt=request.prompt,
                 num_inference_steps=request.num_inference_steps,
                 output_type="pil",
-                generator=torch.Generator(device="cuda").manual_seed(request.seed),
+                generator=torch.Generator(device="xpu").manual_seed(request.seed),
                 guidance_scale=request.cfg,
                 max_sequence_length=self.input_config.max_sequence_length
             )

@@ -38,7 +38,7 @@ def main():
         pipe.enable_model_cpu_offload(gpu_id=local_rank)
         logging.info(f"rank {local_rank} model CPU offload enabled")
     else:
-        device = torch.device(f"cuda:{local_rank}")
+        device = torch.device(f"xpu:{local_rank}")
         pipe = pipe.to(device)
 
     if args.enable_tiling:
@@ -54,10 +54,10 @@ def main():
         num_frames=input_config.num_frames,
         prompt=input_config.prompt,
         num_inference_steps=1,
-        generator=torch.Generator(device="cuda").manual_seed(input_config.seed),
+        generator=torch.Generator(device="xpu").manual_seed(input_config.seed),
     ).frames[0]
 
-    torch.cuda.reset_peak_memory_stats()
+    torch.xpu.reset_peak_memory_stats()
     start_time = time.time()
 
     output = pipe(
@@ -67,12 +67,12 @@ def main():
         prompt=input_config.prompt,
         num_inference_steps=input_config.num_inference_steps,
         guidance_scale=input_config.guidance_scale,
-        generator=torch.Generator(device="cuda").manual_seed(input_config.seed),
+        generator=torch.Generator(device="xpu").manual_seed(input_config.seed),
     ).frames[0]
 
     end_time = time.time()
     elapsed_time = end_time - start_time
-    peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    peak_memory = torch.xpu.max_memory_allocated(device=f"xpu:{local_rank}")
 
     parallel_info = (
         f"dp{engine_args.data_parallel_degree}_cfg{engine_config.parallel_config.cfg_degree}_"

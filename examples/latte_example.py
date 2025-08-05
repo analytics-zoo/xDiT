@@ -24,14 +24,14 @@ def main():
         pretrained_model_name_or_path=engine_config.model_config.model,
         engine_config=engine_config,
         torch_dtype=torch.float16,
-    ).to(f"cuda:{local_rank}")
+    ).to(f"xpu:{local_rank}")
     # pipe.latte_prepare_run(input_config)
 
     vae = AutoencoderKLTemporalDecoder.from_pretrained(
         engine_config.model_config.model,
         subfolder="vae_temporal_decoder",
         torch_dtype=torch.float16,
-    ).to(f"cuda:{local_rank}")
+    ).to(f"xpu:{local_rank}")
     pipe.vae = vae
 
     torch.cuda.reset_peak_memory_stats()
@@ -48,7 +48,7 @@ def main():
     )
     end_time = time.time()
     elapsed_time = end_time - start_time
-    peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     parallel_info = (
         f"dp{engine_args.data_parallel_degree}_cfg{engine_config.parallel_config.cfg_degree}_"

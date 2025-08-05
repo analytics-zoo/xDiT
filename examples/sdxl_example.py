@@ -36,10 +36,10 @@ def main():
         pipe.enable_sequential_cpu_offload(gpu_id=local_rank)
         logging.info(f"rank {local_rank} sequential CPU offload enabled")
     else:
-        pipe = pipe.to(f"cuda:{local_rank}")
+        pipe = pipe.to(f"xpu:{local_rank}")
 
     # Record initial memory usage
-    parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    parameter_peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     # Prepare for inference
     pipe.prepare_run(input_config, steps=input_config.num_inference_steps)
@@ -58,7 +58,7 @@ def main():
     )
     end_time = time.time()
     elapsed_time = end_time - start_time
-    peak_memory = torch.cuda.max_memory_allocated(device=f"cuda:{local_rank}")
+    peak_memory = torch.cuda.max_memory_allocated(device=f"xpu:{local_rank}")
 
     # Generate parallel configuration info string
     parallel_info = (
