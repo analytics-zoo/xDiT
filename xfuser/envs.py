@@ -107,7 +107,7 @@ def get_device_version():
 
 
 def get_torch_distributed_backend() -> str:
-    return "ccl"
+    return "xccl"
     if torch.cuda.is_available():
         return "nccl"
     elif _is_musa():
